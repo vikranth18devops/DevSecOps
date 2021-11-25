@@ -22,7 +22,7 @@ pipeline {
     }
     stage('Docker Build and Push') {
       steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+        withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
           sh 'printenv'
           sh 'docker build -t vikranthdevops18/Springbootapplication:""$GIT_COMMIT"" .'
           sh 'docker push vikranthdevops18/Springbootapplication:""$GIT_COMMIT""'
