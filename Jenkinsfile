@@ -24,8 +24,8 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t vikranthdevops18/Springbootapplication:""$GIT_COMMIT"" .'
-          sh 'docker push vikranthdevops18/Springbootapplication:""$GIT_COMMIT""'
+          sh 'docker build -t vikranthdevops18/springbootapplication:""$GIT_COMMIT"" .'
+          sh 'docker push vikranthdevops18/springbootapplication:""$GIT_COMMIT""'
         }
       }
     }
