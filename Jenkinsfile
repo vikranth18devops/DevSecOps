@@ -34,11 +34,10 @@ pipeline {
     }
 
     stage('SonarQube - SAST') {
-          steps {
-            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://20.124.129.184:9000 -Dsonar.login=ba8aa8f0aa140cf1430ba5435a57ec0b32a026d9"
-          }
-        }
-    0000
+      steps {
+        sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://20.124.129.184:9000 -Dsonar.login=ba8aa8f0aa140cf1430ba5435a57ec0b32a026d9"
+      }
+    }
 
     stage('Docker Build and Push') {
       steps {
