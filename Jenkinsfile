@@ -24,15 +24,15 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t vikranthdevops18/springbootapplication:""$GIT_COMMIT"" .'
-          sh 'docker push vikranthdevops18/springbootapplication:""$GIT_COMMIT""'
+          sh 'docker build -t vikranthdevops18/numeric-app1:""$GIT_COMMIT"" .'
+          sh 'docker push vikranthdevops18/numeric-app1:""$GIT_COMMIT""'
         }
       }
     }
   stage('Kubernetes Deployment - DEV') {
       steps {
         withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh "sed -i 's#replace#vikranthdevops18/springbootapplication:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+          sh "sed -i 's#replace#vikranthdevops18/numeric-app1:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
           sh "kubectl apply -f k8s_deployment_service.yaml"
         }
       }
