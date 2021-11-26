@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   stages {
-
     stage('Build Artifact - Maven') {
       steps {
         sh "mvn clean package -DskipTests=true"
@@ -21,15 +20,24 @@ pipeline {
         }
       }
     }
-
     stage('Docker Build and Push') {
       steps {
-        withDockerRegistry([credentialsId: "docker", url: ""]) {
+        withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
           sh 'printenv'
           sh 'docker build -t vikranthdevops18/numeric-apptest:""$GIT_COMMIT"" .'
           sh 'docker push vikranthdevops18/numeric-apptest:""$GIT_COMMIT""'
         }
       }
     }
+  stage('Kubernetes Deployment - DEV') {
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh "sed -i 's#replace#vikranthdevops18/numeric-apptest:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+          sh "kubectl apply -f k8s_deployment_service.yaml"
+        }
+      }
+    }
+    
   }
+
 }
