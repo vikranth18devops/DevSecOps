@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   stages {
+
     stage('Build Artifact - Maven') {
       steps {
         sh "mvn clean package -DskipTests=true"
@@ -17,6 +18,16 @@ pipeline {
         always {
           junit 'target/surefire-reports/*.xml'
           jacoco execPattern: 'target/jacoco.exec'
+        }
+      }
+    }
+
+    stage('Docker Build and Push') {
+      steps {
+        withDockerRegistry([credentialsId: "docker", url: ""]) {
+          sh 'printenv'
+          sh 'docker build -t vikranthdevops18/numeric-apptest:""$GIT_COMMIT"" .'
+          sh 'docker push vikranthdevops18/numeric-apptest:""$GIT_COMMIT""'
         }
       }
     }
