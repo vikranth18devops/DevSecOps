@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   stages {
+
     stage('Build Artifact - Maven') {
       steps {
         sh "mvn clean package -DskipTests=true"
@@ -9,7 +10,7 @@ pipeline {
       }
     }
 
-    stage('Unit Tests - JUnit and Jacoco') {
+    stage('Unit Tests - JUnit and JaCoCo') {
       steps {
         sh "mvn test"
       }
@@ -20,6 +21,18 @@ pipeline {
         }
       }
     }
+
+    stage('Mutation Tests - PIT') {
+      steps {
+        sh "mvn org.pitest:pitest-maven:mutationCoverage"
+      }
+      post {
+        always {
+          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+        }
+      }
+    }
+
     stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -29,7 +42,8 @@ pipeline {
         }
       }
     }
-  stage('Kubernetes Deployment - DEV') {
+
+    stage('Kubernetes Deployment - DEV') {
       steps {
         withKubeConfig([credentialsId: 'kubeconfig']) {
           sh "sed -i 's#replace#vikranthdevops18/numeric-apptest2:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
@@ -37,7 +51,7 @@ pipeline {
         }
       }
     }
-    
+
   }
 
 }
