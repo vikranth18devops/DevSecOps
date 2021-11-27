@@ -38,6 +38,16 @@ pipeline {
         sh "mvn sonar:sonar -Dsonar.projectKey=devsecops -Dsonar.host.url=http://20.124.210.37:9000 -Dsonar.login=854ca93f34ede1bafac58327713d18c6607638d3"
       }
     }
+    stage('Vulnerability Scan - Docker ') {
+      steps {
+        sh "mvn dependency-check:check"
+      }
+      post {
+        always {
+          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+        }
+      }
+    }
 
     stage('Docker Build and Push') {
       steps {
